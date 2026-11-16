@@ -1,0 +1,22 @@
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+venv/
+*.env
+
+# --- Backups / old versions ---
+*.bak_v1
+*.bak
+
+# --- Local non-demo firmware variant (contains personal Wi-Fi config) ---
+esp32_firmware/fyp_firmware_nodeA_ganu/
+
+# --- Runtime state / logs (regenerated when the system runs) ---
+server/dashboard/blocked_ips.json
+server/dashboard/*.log
+*.log
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db

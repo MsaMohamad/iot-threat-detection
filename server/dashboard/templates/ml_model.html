@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<title>IoT SOC — ML Model</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = { darkMode:'class', theme:{ extend:{
+    colors:{ bg:'#0b0f14', surface:'#0f1620', surface2:'#141b26', border:'#1e293b',
+             secure:'#4ade80', threat:'#f87171', warning:'#fbbf24', primary:'#38bdf8', dim:'#94a3b8' },
+    fontFamily:{ sans:['Inter','sans-serif'], mono:['JetBrains Mono','monospace'] }
+  }}}
+</script>
+<style>body{background:#0b0f14}</style>
+</head>
+<body class="font-sans text-gray-200 flex h-screen overflow-hidden">
+
+<aside class="w-56 bg-surface border-r border-border flex flex-col shrink-0">
+  <div class="px-5 py-5 border-b border-border">
+    <h1 class="text-primary font-semibold text-base">IoT SOC</h1>
+    <p class="text-dim text-xs mt-0.5">Decision Tree Network Security System</p>
+  </div>
+  <nav class="flex-1 px-3 py-4 space-y-1">
+    <a href="/" class="flex items-center gap-3 px-3 py-2 rounded-lg text-dim hover:bg-surface2 hover:text-gray-200 text-sm">
+      <span>&#9632;</span> Dashboard
+    </a>
+    <a href="/ml-model" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface2 text-primary text-sm font-medium">
+      <span>&#9679;</span> ML Model
+    </a>
+  </nav>
+  <div class="px-5 py-4 border-t border-border text-xs text-dim font-mono">FYP2 — 2026</div>
+</aside>
+
+<div class="flex-1 overflow-y-auto p-6 space-y-5">
+  <div>
+    <h2 class="text-xl font-semibold">ML Model Performance</h2>
+    <p class="text-dim text-sm mt-1">Trained Decision Tree evaluation results and live inference configuration.</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="bg-surface border border-border rounded-xl p-5">
+      <div class="text-xs text-dim uppercase tracking-wide mb-4">Model Configuration</div>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><div class="text-dim text-xs">Architecture</div><div class="mt-1 font-medium">Decision Tree Classifier</div></div>
+        <div><div class="text-dim text-xs">Status</div><div class="mt-1 flex items-center gap-1.5 text-secure font-medium"><span class="w-2 h-2 rounded-full bg-secure"></span>ACTIVE</div></div>
+        <div><div class="text-dim text-xs">Confidence Threshold</div><div class="mt-1 font-mono">{{ metrics.threshold }}%</div></div>
+        <div><div class="text-dim text-xs">Overall Accuracy</div><div class="mt-1 font-mono text-primary text-lg">{{ metrics.accuracy }}%</div></div>
+      </div>
+    </div>
+
+    <div class="bg-surface border border-border rounded-xl p-5">
+      <div class="text-xs text-dim uppercase tracking-wide mb-4">Global Classification Metrics</div>
+      <div class="grid grid-cols-3 gap-3 text-center">
+        <div class="bg-surface2 rounded-lg p-3">
+          <div class="text-dim text-[11px]">Precision</div>
+          <div class="font-mono text-primary mt-1">94–99%</div>
+        </div>
+        <div class="bg-surface2 rounded-lg p-3">
+          <div class="text-dim text-[11px]">Recall</div>
+          <div class="font-mono text-primary mt-1">94–99%</div>
+        </div>
+        <div class="bg-surface2 rounded-lg p-3">
+          <div class="text-dim text-[11px]">F1 Score</div>
+          <div class="font-mono text-warning mt-1">95–99%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="bg-surface border border-border rounded-xl p-5">
+      <div class="text-xs text-dim uppercase tracking-wide mb-4 flex items-center justify-between">
+        <span>Class-wise Metrics</span>
+        <span class="flex gap-3 text-[10px] font-mono">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-primary"></span>Precision</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-gray-400"></span>Recall</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-warning"></span>F1</span>
+        </span>
+      </div>
+      <div class="space-y-4">
+        {% for cls, m in metrics.classes.items() %}
+        <div>
+          <div class="text-sm font-medium mb-1">{{ cls }}</div>
+          <div class="grid grid-cols-3 gap-1 h-5">
+            <div class="bg-surface2 rounded-sm relative"><div class="bg-primary h-full rounded-sm" style="width:{{ m.precision }}%"></div></div>
+            <div class="bg-surface2 rounded-sm relative"><div class="bg-gray-400 h-full rounded-sm" style="width:{{ m.recall }}%"></div></div>
+            <div class="bg-surface2 rounded-sm relative"><div class="bg-warning h-full rounded-sm" style="width:{{ m.f1 }}%"></div></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bg-surface border border-border rounded-xl p-5">
+      <div class="text-xs text-dim uppercase tracking-wide mb-4">Feature Importance (from trained model)</div>
+      <div class="space-y-3">
+        {% set max_imp = features[0][1] %}
+        {% for name, imp in features %}
+        <div class="flex items-center gap-3">
+          <span class="w-32 text-xs font-mono text-right text-dim truncate">{{ name }}</span>
+          <div class="flex-1 bg-surface2 h-4 rounded-sm overflow-hidden">
+            <div class="bg-primary h-full rounded-sm" style="width:{{ (imp / max_imp * 100) | round(1) }}%"></div>
+          </div>
+          <span class="text-[10px] font-mono text-dim w-10">{{ (imp * 100) | round(1) }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
