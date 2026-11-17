@@ -33,7 +33,7 @@ The entire pipeline runs on affordable hardware (two ESP32 microcontrollers + on
 | **Large-scale FP / FN** | **9.7%** false-positive, **2.2%** false-negative on the 10,585-sample test set (see [FP/FN analysis](#false-positive--false-negative-analysis)) |
 | **Live deployment** | 53,182 real events across 2 nodes, 22 automatic blocks |
 
-> **Scope note:** this is a **lab proof-of-concept prototype**. The model is trained and evaluated only on the six features the ESP32 can actually compute (see [Design note: feature parity](#design-note-trainingserving-feature-parity)), so the accuracy reflects deployable conditions. The end-to-end validation is a small 12-case functional test, not a large-scale false-positive study — see [Known Limitations](#known-limitations).
+> **Scope note:** this is a **lab proof-of-concept prototype**. The model is trained and evaluated only on the six features the ESP32 can actually compute (see [Design note: feature parity](#design-note-trainingserving-feature-parity)), so the accuracy reflects deployable conditions. The end-to-end validation covers 29 labelled edge cases; for population-level false-positive/negative rates see the [FP/FN analysis](#false-positive--false-negative-analysis) and [Known Limitations](#known-limitations).
 
 ---
 
