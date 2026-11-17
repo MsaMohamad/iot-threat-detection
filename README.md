@@ -1,13 +1,19 @@
-# Automated IoT Network Threat Detection & Mitigation System
+<p align="center">
+  <img src="logo.png" alt="System logo" width="130">
+</p>
 
-**Real-time intrusion detection and automated firewall response for IoT networks, using a Decision Tree model on ESP32 edge sensors.**
+<h1 align="center">Automated IoT Network Threat Detection &amp; Mitigation System</h1>
 
-![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)
-![ESP32](https://img.shields.io/badge/ESP32-Embedded%20C-E7352C?logo=espressif&logoColor=white)
-![MQTT](https://img.shields.io/badge/MQTT-Mosquitto-660066?logo=mqtt&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-Ubuntu%20Server-E95420?logo=ubuntu&logoColor=white)
-![Status](https://img.shields.io/badge/status-working%20prototype-brightgreen)
+<p align="center"><b>Real-time intrusion detection and automated firewall response for IoT networks, using a Decision Tree model on ESP32 edge sensors.</b></p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white" alt="scikit-learn">
+  <img src="https://img.shields.io/badge/ESP32-Embedded%20C-E7352C?logo=espressif&logoColor=white" alt="ESP32">
+  <img src="https://img.shields.io/badge/MQTT-Mosquitto-660066?logo=mqtt&logoColor=white" alt="MQTT">
+  <img src="https://img.shields.io/badge/Linux-Ubuntu%20Server-E95420?logo=ubuntu&logoColor=white" alt="Linux">
+  <img src="https://img.shields.io/badge/status-working%20prototype-brightgreen" alt="Status">
+</p>
 
 > Final Year Project — Bachelor of Telecommunication Engineering Technology (BTET), Universiti Kuala Lumpur British Malaysian Institute (UniKL BMI).
 > Author: **Muhammad Syahmi Aiman**
