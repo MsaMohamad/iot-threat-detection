@@ -20,7 +20,7 @@ import joblib
 OUT = "chapter4_output"
 os.makedirs(OUT, exist_ok=True)
 FEATURES = ['duration_sec', 'total_bytes', 'total_pkts', 'bytes_per_sec',
-            'pkts_per_sec', 'avg_pkt_size', 'fwd_bwd_byte_ratio', 'fwd_bwd_pkt_ratio']
+            'pkts_per_sec', 'avg_pkt_size']
 lines = []
 def p(s=""):
     print(s); lines.append(str(s))

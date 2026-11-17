@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 
 FEATURES = ['duration_sec', 'total_bytes', 'total_pkts', 'bytes_per_sec',
-            'pkts_per_sec', 'avg_pkt_size', 'fwd_bwd_byte_ratio', 'fwd_bwd_pkt_ratio']
+            'pkts_per_sec', 'avg_pkt_size']
 
 print("Loading dataset + model...")
 df = pd.read_csv('datasets/combined_dataset.csv')

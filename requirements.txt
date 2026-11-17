@@ -1,0 +1,13 @@
+# Core ML
+scikit-learn
+pandas
+numpy
+joblib
+imbalanced-learn      # SMOTE
+matplotlib
+
+# Messaging & dashboard
+paho-mqtt
+Flask
+Flask-SocketIO
+eventlet

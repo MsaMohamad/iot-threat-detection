@@ -28,7 +28,7 @@ scaler = joblib.load('../models_output/scaler.pkl')
 print("Model loaded!\n")
 
 FEATURE_COLS = ['duration_sec', 'total_bytes', 'total_pkts', 'bytes_per_sec',
-                'pkts_per_sec', 'avg_pkt_size', 'fwd_bwd_byte_ratio', 'fwd_bwd_pkt_ratio']
+                'pkts_per_sec', 'avg_pkt_size']
 
 FEATURE_IMPORTANCE = sorted(
     zip(FEATURE_COLS, model.feature_importances_.tolist()),
@@ -36,13 +36,13 @@ FEATURE_IMPORTANCE = sorted(
 )
 
 MODEL_METRICS = {
-    "accuracy": 96.79,
+    "accuracy": 95.36,
     "threshold": 85.0,
     "classes": {
-        "Brute Force": {"precision": 94, "recall": 97, "f1": 96},
-        "DDoS":        {"precision": 99, "recall": 99, "f1": 99},
-        "Normal":      {"precision": 96, "recall": 94, "f1": 95},
-        "Port Scan":   {"precision": 99, "recall": 98, "f1": 99},
+        "Brute Force": {"precision": 93, "recall": 96, "f1": 94},
+        "DDoS":        {"precision": 97, "recall": 98, "f1": 98},
+        "Normal":      {"precision": 94, "recall": 90, "f1": 92},
+        "Port Scan":   {"precision": 99, "recall": 98, "f1": 98},
     }
 }
 
@@ -327,7 +327,7 @@ def extract_features(data):
     bytes_per_sec = data.get('bytes_per_sec', 0)
     duration_sec = 3.0
     avg_pkt_size = total_bytes / (total_pkts + 1)
-    return [duration_sec, total_bytes, total_pkts, bytes_per_sec, pkts_per_sec, avg_pkt_size, 1.0, 1.0]
+    return [duration_sec, total_bytes, total_pkts, bytes_per_sec, pkts_per_sec, avg_pkt_size]
 
 
 def refine_prediction(ml_prediction, data):
