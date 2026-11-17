@@ -51,6 +51,7 @@ MQTT_TOPIC = "iot/esp32_1/data"
 
 PORT_DIVERSITY_THRESHOLD = 5
 HIGH_RATE_THRESHOLD = 30
+DDOS_RATE_FLOOR = 150     # sustained rate above this against few ports = flood
 FAILED_LOGIN_THRESHOLD = 2
 PORTSCAN_MIN_PORTS = 10   # a real port scan touches many ports (per 3s window)
 SLOWSCAN_MIN_PORTS = 15   # unique ports across 60s - catches slow/stealthy scans
@@ -346,6 +347,12 @@ def refine_prediction(ml_prediction, data):
     # estimate) to catch slow / stealthy scans the per-window model would miss.
     if unique_60s >= SLOWSCAN_MIN_PORTS:
         return "Port Scan", (ml_prediction != "Port Scan")
+
+    # Flood signature: a sustained high packet rate against very few ports is a
+    # DDoS flood regardless of the model's label. Normal IoT traffic never
+    # sustains this rate, so this catches moderate floods the model may under-rate.
+    if pkts_per_sec >= DDOS_RATE_FLOOR and unique_ports <= PORT_DIVERSITY_THRESHOLD:
+        return "DDoS", (ml_prediction != "DDoS")
 
     # DDoS false-positive guard: a real DDoS is a flood with a very high packet
     # rate. If the model flags DDoS at a low packet rate, it is a normal burst,

@@ -29,7 +29,8 @@ The entire pipeline runs on affordable hardware (two ESP32 microcontrollers + on
 | **Model accuracy** | **95.36%** on the held-out test set (10,585 samples) |
 | **Mitigation processing time** | **8.8 ms** average, *detect → firewall block* (see [Latency](#mitigation-latency) for the full end-to-end timing) |
 | **Attack types** | 4 (Port Scan, DDoS, Brute Force, USB-malware) |
-| **End-to-end functional validation** | **12 / 12** labelled cases correct (8 attack, 4 normal) — 0 FP / 0 FN on this small set |
+| **End-to-end functional validation** | **29 / 29** labelled edge cases correct — 0 FP / 0 FN on the full pipeline (model + rules) |
+| **Large-scale FP / FN** | **9.7%** false-positive, **2.2%** false-negative on the 10,585-sample test set (see [FP/FN analysis](#false-positive--false-negative-analysis)) |
 | **Live deployment** | 53,182 real events across 2 nodes, 22 automatic blocks |
 
 > **Scope note:** this is a **lab proof-of-concept prototype**. The model is trained and evaluated only on the six features the ESP32 can actually compute (see [Design note: feature parity](#design-note-trainingserving-feature-parity)), so the accuracy reflects deployable conditions. The end-to-end validation is a small 12-case functional test, not a large-scale false-positive study — see [Known Limitations](#known-limitations).
@@ -149,19 +150,39 @@ So the **processing/mitigation step is ~8.8 ms**, but the **end-to-end response 
 2026-11-04 23:40:12  UNBLOCKED 192.168.0.32 | reason: timeout expired (300s)
 ```
 
-### End-to-end functional validation (n = 12)
+### End-to-end functional validation (n = 29)
 
-Running the full pipeline (model **+** rules) against **12 labelled ground-truth payloads** — including the boundary cases (slow scans, heavy-but-normal traffic):
+Running the full pipeline (model **+** rules) against **29 labelled ground-truth payloads** (`test_report.py`) — 11 normal and 18 attack, weighted toward the boundary cases that stress the rule layer (heavy-but-normal bursts, slow scans at the 60 s threshold, moderate floods, brute-force at the login threshold):
 
 ```
-Total test cases          : 12  (8 attack, 4 normal)
-Correct (final==truth)    : 12/12 = 100.0%
-Attack detection rate     : 8/8   = 100.0%
-False POSITIVE            : 0/4   = 0.0%
-False NEGATIVE            : 0/8   = 0.0%
+Total test cases          : 29  (18 attack, 11 normal)
+Correct (final==truth)    : 29/29 = 100.0%
+Attack detection rate     : 18/18 = 100.0%
+False POSITIVE            : 0/11  = 0.0%
+False NEGATIVE            : 0/18  = 0.0%
 ```
 
-> This is a **functional smoke test** that the detection logic + rules behave correctly on representative signatures and known edge cases. **It is not** a statistically significant false-positive/false-negative rate — the sample is only 12 cases. A large-scale FP/FN study on captured live traffic is future work.
+> This is a **functional test** that the detection logic + rules behave correctly on representative signatures and known edge cases. It is deliberately heavy on normal and boundary cases to probe for false positives/negatives in the rule layer. For a *population-level* rate, see the analysis below.
+
+### False Positive / False Negative Analysis
+
+False positives/negatives were the supervisor's primary concern, so they are measured three ways:
+
+**1. Population rates — raw model on the 10,585-sample test set** (derived from the confusion matrix above):
+
+| Metric | Rate | Count |
+|---|---|---|
+| **False Positive** (Normal → flagged as an attack) | **9.7%** | 292 / 3,000 |
+| **False Negative** (attack → missed as Normal) | **2.2%** | 166 / 7,585 |
+| &nbsp;&nbsp;↳ Brute Force missed | 3.3% | 90 / 2,767 |
+| &nbsp;&nbsp;↳ DDoS missed | 1.7% | 47 / 2,818 |
+| &nbsp;&nbsp;↳ Port Scan missed | 1.5% | 29 / 2,000 |
+
+**2. Hybrid system (model + rule layer) — 29 edge cases:** 0 FP / 0 FN. The rule layer's guards (low-rate "DDoS" → Normal, few-port "Port Scan" → Normal, flood-floor, 60 s slow-scan) specifically correct the model's edge mistakes.
+
+**3. Live operation — 53,182 real events:** of the 53,095 normal events, essentially none produced a false block; all 22 blocks were genuine attacks.
+
+**Interpretation:** the raw model's 9.7% false-positive rate is cut sharply by the rule layer and does **not** translate into false blocks in practice, because mitigation only fires on a high-confidence (≥85%), rule-confirmed detection. This model-vs-rules-vs-live comparison is the core of the Results & Discussion chapter.
 
 ---
 
